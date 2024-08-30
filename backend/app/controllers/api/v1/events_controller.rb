@@ -7,7 +7,12 @@ class API::V1::EventsController < ApplicationController
     before_action :verify_jwt_token, only: [:create, :update, :destroy]
 
     def index
-        @events = Event.all
+        if params[:bar_id]
+            @bar = Bar.find(params[:bar_id])
+            @events = @bar.events
+        else
+            @events = Event.all
+        end
         render json: { events: @events }, status: :ok
     end
 

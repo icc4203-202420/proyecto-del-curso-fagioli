@@ -6,7 +6,7 @@ class API::V1::FriendshipsController < ApplicationController
     before_action :set_user
     
     def index
-      @friendships = Friendship.all   
+      @friendships = @user.friendships
       render json: { friendships: @friendships }, status: :ok
     end
   
