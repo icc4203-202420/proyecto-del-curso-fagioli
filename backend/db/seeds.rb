@@ -51,4 +51,6 @@ if Rails.env.development?
     end
   end
 
+  FactoryBot.create_list(:review, 10)
+
 end

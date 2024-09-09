@@ -1,10 +1,18 @@
 class API::V1::ReviewsController < ApplicationController
+  include Authenticable
+
   respond_to :json
-  before_action :set_user, only: [:index, :create]
+  before_action :set_parent, only: [:index, :create]
   before_action :set_review, only: [:show, :update, :destroy]
+  before_action :verify_jwt_token, only: [:create, :update, :destroy]
 
   def index
-    @reviews = Review.where(user: @user)
+    # @reviews = Review.where(user: @user)
+    if @parent
+      @reviews = @parent.reviews
+    else
+      @reviews = Review.all
+    end
     render json: { reviews: @reviews }, status: :ok
   end
 
@@ -17,7 +25,7 @@ class API::V1::ReviewsController < ApplicationController
   end
 
   def create
-    @review = @user.reviews.build(review_params)
+    @review = @parent.reviews.build(review_params.merge(user_id: current_user.id))
     if @review.save
       render json: @review, status: :created, location: api_v1_review_url(@review)
     else
@@ -45,8 +53,12 @@ class API::V1::ReviewsController < ApplicationController
     render json: { error: "Review not found" }, status: :not_found unless @review
   end
 
-  def set_user
-    @user = User.find(params[:user_id]) 
+  def set_parent
+    if params[:user_id]
+      @parent = User.find(params[:user_id])
+    elsif params[:beer_id]
+      @parent = Beer.find(params[:beer_id])
+    end
   end
 
   def review_params

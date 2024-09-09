@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Typography, CircularProgress, TextField, Button, Stack } from '@mui/material';
+import { Typography, CircularProgress, TextField, Button, Stack, List, ListItem, ListItemButton, ListItemText, Box, LinearProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
+import Beer from './Beer';
 
 const SearchResource = ({ endpoint, resource }) => {
    
@@ -42,8 +43,8 @@ const SearchResource = ({ endpoint, resource }) => {
       sx={{
         padding: '20px',
         justifyContent: "center",
-        alignItems: "flex-start",
-        width: 'fit-content',
+        alignItems: "flex-center",
+        // width: 'fit-content',
         margin: 'auto',
       }} 
     >
@@ -54,8 +55,12 @@ const SearchResource = ({ endpoint, resource }) => {
       <Button variant="contained" color="primary" onClick={handleSearch} >
         search
       </Button>
+
       {isLoading ? (
-        <CircularProgress />
+        // <Box sx={{ display: 'flex' }}>
+        //   <CircularProgress />
+        // </Box>
+        <LinearProgress />
       ) : (
         data.length > 0 ? (
           data.map((elem) => {
@@ -71,17 +76,41 @@ const SearchResource = ({ endpoint, resource }) => {
                     width: '100%',
                   }}
                 >
-                  <Typography variant='span' key={elem.id}>{elem.name}</Typography>
+                  {
+                    resource === 'Beer' && (
+                      <ListItem key={elem.id}>
+                        <ListItemButton 
+                          component='a' 
+                          href={`/beers/${elem.id}`}
+                          sx={{ 
+                            backgroundColor: 'background.default', 
+                            color: 'primary.main', 
+                            border: 1,
+                            borderRadius: 1,
+                            borderColor: 'primary.main',
+                            // '&:hover': {
+                            //   backgroundColor: 'secondary.dark',
+                            // }
+                          }}
+                        >
+                          <ListItemText primary={elem.name} />
+                        </ListItemButton>
+                      </ListItem>
+                    )
+                  }
                   {
                     resource === 'Bar' && (
-                      <Button component={Link} to={`/bars/${elem.id}/events`} variant="outlined" sx={{ marginLeft: '10px' }}>See events</Button>
+                      <>
+                        <Typography variant='p'>{elem.name}</Typography>
+                        <Button component={Link} to={`/bars/${elem.id}/events`} variant="outlined" sx={{ marginLeft: '10px' }}>See events</Button>
+                      </>
                     )
                   }
                 </Stack>
               </>
           )}})
         ) : (
-          <p>No bars found.</p>
+          <Typography variant='p'>No resources were found.</Typography>
         )
       )}
       
