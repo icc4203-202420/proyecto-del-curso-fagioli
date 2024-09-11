@@ -1,4 +1,4 @@
-import { Typography, Stack, Slider, TextField, Button } from "@mui/material";
+import { Typography, Stack, Slider, TextField, Button, Pagination } from "@mui/material";
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import axios from "axios";
@@ -39,11 +39,12 @@ const Beer = ( { auth, setIsAuth } ) => {
   const [ beerData, setBeerData ] = useState({});
   const [serverError, setServerError] = useState('');
   const [rev, setRev] = useStorageState('bars-app-rev', '');
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 4;
   
   const storiesHookReducer = (state, action) => {
     switch (action.type) {
       case 'STORIES_FETCH_SUCCESS':
-        console.log('got it...');
         return {
           ...state,
           isLoading: false,
@@ -51,14 +52,12 @@ const Beer = ( { auth, setIsAuth } ) => {
           stor: action.payload
         };
       case 'STORIES_FETCH_INIT':
-        console.log('loading...');
         return {
           ...state,
           isLoading: true,
           isError: false
         };
         case 'STORIES_FETCH_FAILURE':
-        console.log('error...');
         return {
           ...state,
           isLoading: false,
@@ -77,7 +76,6 @@ const Beer = ( { auth, setIsAuth } ) => {
     const fetcher = async () => {
       try {
         const beerResp = await axios.get(`/api/v1/beers/${id}`);
-        console.log(beerResp.data.beer);
         setBeerData(beerResp.data.beer);
         
         dispatchHookStories({ type: 'STORIES_FETCH_INIT' });
@@ -86,9 +84,7 @@ const Beer = ( { auth, setIsAuth } ) => {
           type: 'STORIES_FETCH_SUCCESS',
           payload: reviewResp.data.reviews,
         });
-        console.log(reviewResp.data.reviews);
       } catch (err) {
-        console.log(err);
         dispatchHookStories({type: 'STORIES_FETCH_FAILURE'});
       }      
     };
@@ -98,13 +94,11 @@ const Beer = ( { auth, setIsAuth } ) => {
   }, [serverError]);
 
   const handleSubmit = (vals, { setSubmitting }) => {
-    console.log(vals);
     axios
       .post(`/api/v1/beers/${id}/reviews`, { "review": vals }, { 
         headers: { Authorization: JSON.parse(auth) },
       })
       .then((resp) => {
-        console.log(resp.data);
         setServerError('');
         setRev(JSON.stringify(vals));
       })
@@ -117,99 +111,110 @@ const Beer = ( { auth, setIsAuth } ) => {
       .then(() => setSubmitting(false));
   };
 
+  const handlePageChange = (x, value) => {
+    setPage(value);
+  };
+
+  const startIndex = (page-1)*itemsPerPage;
+  const endIndex = startIndex+itemsPerPage;
+  const displayedRevs = hookStories.stor.slice(startIndex, endIndex);
+
   return (
-    <>
-      <Stack
-        spacing={3}
-        sx={{
-          padding: '20px',
-          justifyContent: "center",
-          alignItems: "flex-center",
-          width: 'fit-content',
-          margin: 'auto',
-        }} 
+    <Stack
+      spacing={3}
+      sx={{
+        padding: '20px',
+        justifyContent: "center",
+        alignItems: "flex-center",
+        width: 'fit-content',
+        margin: 'auto',
+      }} 
+    >
+      <Typography variant="h4" >{ beerData.name }</Typography>
+      {
+        Object.keys(beerData).map((item, index) => {
+          if (!['id', 'beer_type', 'created_at', 'updated_at', 'brand_id', 'name'].includes(item)) {
+            return (
+              <Typography key={index} > { `${item}: ${beerData[item]}` } </Typography>
+            )
+          }
+        })
+      }
+      
+      <Typography variant="h4" >Evalúa la cerveza</Typography>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
       >
-        <Typography variant="h4" >{ beerData.name }</Typography>
-        {
-          Object.keys(beerData).map((item) => {
-            if (!['id', 'beer_type', 'created_at', 'updated_at', 'brand_id', 'name'].includes(item)) {
-              return (
-                <Typography> { `${item}: ${beerData[item]}` } </Typography>
-              )
-            }
-          })
-        }
-        
-        <Typography variant="h4" >Evalúa la cerveza</Typography>
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting, errors, touched, values, setFieldValue }) => (
-            <Form>
-              <Stack
-                spacing={3}
-                sx={{
-                  padding: '20px',
-                  justifyContent: "center",
-                  alignItems: "flex-center",
-                  margin: 'auto',
-                }} 
+        {({ isSubmitting, errors, touched, values, setFieldValue }) => (
+          <Form>
+            <Stack
+              spacing={3}
+              sx={{
+                padding: '20px',
+                justifyContent: "center",
+                alignItems: "flex-center",
+                margin: 'auto',
+              }} 
+            >
+              <Slider
+                value={values.rating || 0}
+                onChange={(event, value) => setFieldValue('rating', value)}
+                min={0}
+                max={5}
+                step={0.1}
+                marks
+              />
+              {touched.rating && errors.rating && (
+                <Typography color="error">{errors.rating}</Typography>
+              )}
+              <Field 
+                as={TextField}
+                label='Comentario'
+                variant='filled'
+                name='text'
+                type='text'
+                error={touched.text && Boolean(errors.text)}
+                helperText={touched.text && errors.text}
+              />
+              <Button
+                variant='contained'
+                type='submit'
+                disabled={isSubmitting}
               >
-                <Slider
-                  value={values.rating || 0}
-                  onChange={(event, value) => setFieldValue('rating', value)}
-                  min={0}
-                  max={5}
-                  step={0.1}
-                  marks
-                />
-                {touched.rating && errors.rating && (
-                  <Typography color="error">{errors.rating}</Typography>
-                )}
-                <Field 
-                  as={TextField}
-                  label='Comentario'
-                  variant='filled'
-                  name='text'
-                  type='text'
-                  error={touched.text && Boolean(errors.text)}
-                  helperText={touched.text && errors.text}
-                />
-                <Button
-                  variant='contained'
-                  type='submit'
-                  disabled={isSubmitting}
-                >
-                  Enviar
-                </Button>
-                {serverError && (
-                  <Typography color="error" variant="body2" align="center" sx={{ mt: 2 }}>
-                    {serverError}
-                  </Typography>
-                )}
-              </Stack>
-            </Form>
-          )}
-        </Formik>
-        
-        <Typography variant="h4" >Evaluaciones de la cerveza</Typography>
-        <p> { `Yo: ${JSON.parse(rev).rating} Stars, ${JSON.parse(rev).text}` } </p>
-        
-        {hookStories.isError && <p>Oh, oh, something went wrong</p> }
-        {hookStories.isLoading ? (
-          <p>Loading, please wait...</p>
-        ) : (
-          hookStories.stor.map((review) => (
-            <>
-              <p> { `${review.rating} Stars, ${review.text}` } </p>
-            </>
-          ))
+                Enviar
+              </Button>
+              {serverError && (
+                <Typography color="error" variant="body2" align="center" sx={{ mt: 2 }}>
+                  {serverError}
+                </Typography>
+              )}
+            </Stack>
+          </Form>
         )}
-        
-      </Stack>
-    </>
+      </Formik>
+      
+      <Typography variant="h4" >Evaluaciones de la cerveza</Typography>
+      <p> { `Yo: ${JSON.parse(rev).rating} Stars, ${JSON.parse(rev).text}` } </p>
+      
+      {hookStories.isError && <p>Oh, oh, something went wrong</p> }
+      {hookStories.isLoading ? (
+        <p>Loading, please wait...</p>
+      ) : (
+        displayedRevs.map((review, index) => (
+          <p key={index} > { `${review.rating} Stars, ${review.text}` } </p>
+        ))
+      )}
+
+      <Pagination
+        count={Math.ceil(hookStories.stor.length / itemsPerPage)}
+        siblingCount={0}
+        page={page}
+        onChange={handlePageChange}
+      />
+      
+    </Stack>
   );
 };
 

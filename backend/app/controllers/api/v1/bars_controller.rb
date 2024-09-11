@@ -8,7 +8,8 @@ class API::V1::BarsController < ApplicationController
 
   def index
     @bars = Bar.all
-    render json: { bars: @bars }, status: :ok
+    @bars_with_addresses = @bars.map { |bar| bar.as_json.merge(address: bar.address, country: bar.address.country) }
+    render json: { bars: @bars_with_addresses }, status: :ok
   end
 
   def show
