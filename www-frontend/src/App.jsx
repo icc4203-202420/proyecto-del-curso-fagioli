@@ -35,6 +35,7 @@ const useStorageState = (key, defaultVal) => {
 function App() {
   const [heads, setHeads] = useStorageState('bars-app-auth', '');
   const [isAuthenticated, setIsAuthenticated] = useStorageState('bars_isAuth', false);
+  const [userId, setUserId] = useStorageState('bars_user_id', null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -113,12 +114,12 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/bars' element={<SearchResource endpoint={'bars'} resource={'Bar'} />} />
-        <Route path='/bars/:id/events' element={<EventsBar />} />
+        <Route path='/bars/:id/events' element={<EventsBar auth={heads} setIsAuth={handleSetAuth} current_user_id={userId} />} />
         <Route path='/beers' element={<SearchResource endpoint={'beers'} resource={'Cerveza'} />} />
         <Route path='/beers/:id' element={<Beer auth={heads} setIsAuth={handleSetAuth} />} />
         <Route path='/usersearch' element={<SearchResource endpoint={'usersearch'} resource={'Usuario'} />} />
-        <Route path='/login' element={<Login tokenSaver={handleSave} setIsAuth={handleSetAuth} />} />
-        <Route path='/signup' element={<SignUp tokenSaver={handleSave} setIsAuth={handleSetAuth} />} />
+        <Route path='/login' element={<Login tokenSaver={handleSave} setIsAuth={handleSetAuth} setUID={setUserId} />} />
+        <Route path='/signup' element={<SignUp tokenSaver={handleSave} setIsAuth={handleSetAuth} setUID={setUserId} />} />
         <Route path='/bars/map' element={<BarMap />} />
       </Routes>
     </div>

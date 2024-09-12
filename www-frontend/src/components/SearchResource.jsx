@@ -101,7 +101,15 @@ const SearchResource = ({ endpoint, resource }) => {
                         <Typography variant='caption'>{elem.address.line1}</Typography>
                         <Typography variant='caption'>{elem.address.line2}</Typography>
                       </Stack>
-                      <Button component={Link} to={`/bars/${elem.id}/events`} variant="outlined" sx={{ marginLeft: '10px' }}>Ver eventos</Button>
+                      <Button 
+                        component={Link} 
+                        to={`/bars/${elem.id}/events`} 
+                        state={{ bar_name: elem.name }}
+                        variant="outlined" 
+                        sx={{ marginLeft: '10px' }}
+                      >
+                        Ver eventos
+                      </Button>
                     </>
                   )
                 }

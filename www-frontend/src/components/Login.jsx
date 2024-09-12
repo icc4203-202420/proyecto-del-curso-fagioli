@@ -24,7 +24,7 @@ const initialValues = {
   password: '',
 };
 
-const Login = ({ tokenSaver, setIsAuth }) => {
+const Login = ({ tokenSaver, setIsAuth, setUID }) => {
   const [serverError, setServerError] = useState('');
   const navi = useNavigate();
   const loginData = {
@@ -39,11 +39,12 @@ const Login = ({ tokenSaver, setIsAuth }) => {
       .post(`/api/v1/login`, { "user": vals })
       .then((resp) => {
         // console.log(resp.headers.authorization.length);
-        console.log(resp.headers.authorization);
+        // console.log(resp.headers.authorization);
         const newAuth = JSON.stringify(resp.headers.authorization);
-        console.log(newAuth);
+        // console.log(newAuth);
         tokenSaver(newAuth);
         setIsAuth(true);
+        setUID(JSON.stringify(resp.data.status.data.user.id));
         setServerError('');
         navi('/');
       })

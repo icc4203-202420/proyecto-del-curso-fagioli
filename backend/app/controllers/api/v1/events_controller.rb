@@ -4,14 +4,27 @@ class API::V1::EventsController < ApplicationController
 
     respond_to :json
     before_action :set_event, only: [:show, :update, :destroy]
-    before_action :verify_jwt_token, only: [:create, :update, :destroy]
+    before_action :verify_jwt_token, only: [:index, :create, :update, :destroy]
 
     def index
         if params[:bar_id]
             @bar = Bar.find(params[:bar_id])
-            @events = @bar.events
+            @eventos = @bar.events
+            @events = @eventos.map do |event| 
+                event.as_json().merge(
+                    attendances: event.attendances.map do |attendance| 
+                        attendance.as_json().merge(
+                            user_first_name: attendance.user.first_name,
+                            user_last_name: attendance.user.last_name,
+                            user_handle: attendance.user.handle,
+                            is_friend: attendance.user.friends.include?(current_user)
+                        )
+                    end
+                )
+            end
+            puts "\n\n#{current_user.id}, #{current_user.first_name}\n\n"
         else
-            @events = Event.all
+            @events = Event.all#.map {|event| do puts event}
         end
         render json: { events: @events }, status: :ok
     end
