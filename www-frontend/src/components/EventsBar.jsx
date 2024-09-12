@@ -14,7 +14,7 @@ const EventsBar = ({ auth, setIsAuth, current_user_id }) => {
 
   const getEvents = useCallback(() => {
     setisLoading(true);
-    console.log(current_user_id);
+    // console.log(current_user_id);
     axios.get(`/api/v1/bars/${id}/events`, { 
       headers: { Authorization: JSON.parse(auth) },
     })
@@ -32,7 +32,7 @@ const EventsBar = ({ auth, setIsAuth, current_user_id }) => {
           });
           return ({...event, confirmed: confirmed});
         });
-        console.log('evs:', evs);
+        // console.log('evs:', evs);
         setEvents(evs);
       })
       .catch((err) => {
@@ -105,8 +105,6 @@ const EventsBar = ({ auth, setIsAuth, current_user_id }) => {
               <Divider />
               {
                 elem.attendances.sort((a,b) => {
-                  console.log('a', a);
-                  console.log('b', b);
                   if (!a.is_friend) {
                     return 1
                   }
