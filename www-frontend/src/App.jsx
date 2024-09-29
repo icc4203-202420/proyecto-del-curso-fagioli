@@ -8,6 +8,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Home from './components/Home';
 import SearchResource from './components/SearchResource';
 import EventsBar from './components/EventsBar';
+import EventPictures from './components/EventPictures';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import axios from 'axios';
@@ -115,6 +116,7 @@ function App() {
         <Route path='/' element={<Home />} />
         <Route path='/bars' element={<SearchResource endpoint={'bars'} resource={'Bar'} />} />
         <Route path='/bars/:id/events' element={<EventsBar auth={heads} setIsAuth={handleSetAuth} current_user_id={userId} />} />
+        <Route path='/bars/:bar_id/events/:event_id/event_pictures' element={<EventPictures auth={heads} setIsAuth={handleSetAuth} current_user_id={userId} />} />
         <Route path='/beers' element={<SearchResource endpoint={'beers'} resource={'Cerveza'} />} />
         <Route path='/beers/:id' element={<Beer auth={heads} setIsAuth={handleSetAuth} />} />
         <Route path='/usersearch' element={<SearchResource endpoint={'usersearch'} resource={'Usuario'} />} />

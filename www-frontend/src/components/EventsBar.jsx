@@ -1,5 +1,5 @@
 import { useLocation, useParams } from 'react-router-dom';
-import { Typography, CircularProgress, Stack, Box, Divider, Button } from '@mui/material';
+import { Typography, CircularProgress, Stack, Box, Divider, Button, Link } from '@mui/material';
 import { useState, useEffect, Fragment, useCallback } from 'react';
 import axios from 'axios';
 
@@ -127,6 +127,15 @@ const EventsBar = ({ auth, setIsAuth, current_user_id }) => {
                 disabled={elem.confirmed}
               >
                 {elem.confirmed ? ('Asistencia confirmada') : ('Confirmar asistencia')}
+              </Button>
+              <br />
+              <Button 
+                component={Link}
+                href={`/bars/${elem.bar_id}/events/${elem.id}/event_pictures`}
+                variant="outlined" 
+                sx={{ mt: 2 }}
+              >
+                Ver fotos
               </Button>
             </Box>
           ))

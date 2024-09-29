@@ -3,7 +3,8 @@ class API::V1::UsersController < ApplicationController
   before_action :set_user, only: [:show, :update]  
   
   def index
-    @users = User.includes(:reviews, :address).all   
+    @users = User.includes(:reviews, :address).all
+    render json: @users
   end
 
   def show
