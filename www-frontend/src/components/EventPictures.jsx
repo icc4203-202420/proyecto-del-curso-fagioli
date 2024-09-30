@@ -1,13 +1,15 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Typography, Stack, Box, Button, Card, CardMedia, CardContent } from '@mui/material';
+import { Typography, Stack, Box, Button, Card, CardMedia, CardContent, Autocomplete, TextField } from '@mui/material';
 
 const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
   const { bar_id, event_id } = useParams();
   const [selectedImage, setSelectedImage] = useState(null);
   const [pictures, setPictures] = useState([]);
   const [stream, setStream] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [users, setUsers] = useState([]);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -18,6 +20,19 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
       }
     )
       .then((data) => {
+        axios.get('/api/v1/users',
+          {
+            headers: { Authorization: JSON.parse(auth) }
+          })
+          .then((resp_users) => {
+            setUsers(resp_users.data.users);
+          })
+          .catch((error) => {
+            console.error(error);
+            if (error.status === 401) {
+              setIsAuth(false);
+            }
+          });
         console.log("Respuesta del servidor:", data.data.event_pictures);
         setPictures(data.data.event_pictures);
       })
@@ -89,6 +104,31 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
       setStream(null);
     }
   };
+
+  const handleTagUser = (ep_id) => {
+    axios.post(`/api/v1/tags`,
+      { 
+        tag: { 
+          user_id: selectedUser.id, 
+          event_picture_id: ep_id
+        }
+      },
+      {
+        headers: { Authorization: JSON.parse(auth) }
+      }
+    )
+      .then((data) => {
+        console.log("Respuesta del servidor:", data);
+        getPictures();
+      })
+      .catch((error) => {
+        console.error("Error creando el tag:", error);
+        if (error.status === 401) {
+          setIsAuth(false);
+        }
+      });
+  }
+
   return (
     <Stack
       spacing={4}
@@ -192,6 +232,31 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
               <Typography variant="body2" color="#ccc">
                 {new Date(pic.created_at).toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </Typography>
+              <Stack spacing={1} sx={{ marginTop: '20px' }}>
+                <Autocomplete
+                  options={users} 
+                  getOptionLabel={(option) => option.handle}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option.id}
+                      style={{ backgroundColor: '#320808', color: '#ddd' }}
+                    >
+                      {option.handle}
+                    </li>
+                  )}
+                  onChange={(event, newValue) => {
+                    setSelectedUser(newValue);
+                  }}
+                  renderInput={(params) => <TextField {...params} label="Usuarios" />}
+                />
+                <Button 
+                  onClick={() => handleTagUser(pic.id)}
+                  disabled={selectedUser ? false : true}
+                  variant="outlined"
+                  sx={{ marginLeft: '10px' }}
+                >
+                  Etiquetar usuario
+                </Button>
+              </Stack>
               { (pic.tags.length > 0) ? (
                 <>
                   <br />
