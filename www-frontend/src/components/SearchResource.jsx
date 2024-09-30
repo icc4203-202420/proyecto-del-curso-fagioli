@@ -9,7 +9,7 @@ const SearchResource = ({ endpoint, resource, auth, setIsAuth, current_user_id }
   const [data, setData] = useState([]);
   const [term, setTerm] = useState('');
   const [userEvents, setUserEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState([]);
 
   const getResources = () => {
     setisLoading(true);
@@ -61,12 +61,13 @@ const SearchResource = ({ endpoint, resource, auth, setIsAuth, current_user_id }
   }
 
   const handleCreateFriendship = (future_friend_id) => {
+    const selectedUserForEvent = selectedEvent.find(item => item.user_id === future_friend_id);
     axios.post(`/api/v1/users/${current_user_id}/friendships`,
       { 
         friendship: { 
           friend_id: future_friend_id, 
-          event_id: selectedEvent ? selectedEvent.id : null, 
-          bar_id: selectedEvent ? selectedEvent.bar_id : null
+          event_id: selectedUserForEvent ? selectedUserForEvent.event.id : null, 
+          bar_id: selectedUserForEvent ? selectedUserForEvent.event.bar_id : null
         } 
       },
       {
@@ -92,7 +93,6 @@ const SearchResource = ({ endpoint, resource, auth, setIsAuth, current_user_id }
         padding: '20px',
         justifyContent: "center",
         alignItems: "flex-center",
-        // width: 'fit-content',
         margin: 'auto',
       }} 
     >
@@ -105,9 +105,6 @@ const SearchResource = ({ endpoint, resource, auth, setIsAuth, current_user_id }
       </Button>
 
       {isLoading ? (
-        // <Box sx={{ display: 'flex' }}>
-        //   <CircularProgress />
-        // </Box>
         <LinearProgress />
       ) : (
         data.length > 0 ? (
@@ -207,7 +204,17 @@ const SearchResource = ({ endpoint, resource, auth, setIsAuth, current_user_id }
                               </li>
                             )}
                             onChange={(event, newValue) => {
-                              setSelectedEvent(newValue);
+                              setSelectedEvent((prevSelectedEvents) => {
+                                const existingEventIndex = prevSelectedEvents.findIndex(item => item.user_id === elem.id);
+                                
+                                if (existingEventIndex !== -1) {
+                                  const updatedEvents = [...prevSelectedEvents];
+                                  updatedEvents[existingEventIndex].event = newValue;
+                                  return updatedEvents;
+                                } else {
+                                  return [...prevSelectedEvents, { user_id: elem.id, event: newValue }];
+                                }
+                              });
                             }}
                             renderInput={(params) => <TextField {...params} label="Evento" />}
                           />

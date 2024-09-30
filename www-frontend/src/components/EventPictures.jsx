@@ -8,7 +8,7 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [pictures, setPictures] = useState([]);
   const [stream, setStream] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState([]);
   const [users, setUsers] = useState([]);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -106,10 +106,11 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
   };
 
   const handleTagUser = (ep_id) => {
+    const selectedUserForPic = selectedUser.find(item => item.pic_id === ep_id);
     axios.post(`/api/v1/tags`,
       { 
         tag: { 
-          user_id: selectedUser.id, 
+          user_id: selectedUserForPic.userToTag.id, 
           event_picture_id: ep_id
         }
       },
@@ -234,7 +235,7 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
               </Typography>
               <Stack spacing={1} sx={{ marginTop: '20px' }}>
                 <Autocomplete
-                  options={users} 
+                  options={users.filter((user) => !pic.tags.some((tag) => tag.handle === user.handle))} 
                   getOptionLabel={(option) => option.handle}
                   renderOption={(props, option) => (
                     <li {...props} key={option.id}
@@ -244,13 +245,23 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
                     </li>
                   )}
                   onChange={(event, newValue) => {
-                    setSelectedUser(newValue);
+                    setSelectedUser((prevSelectedUsers) => {
+                      const existingUserIndex = prevSelectedUsers.findIndex(item => item.pic_id === pic.id);
+                      
+                      if (existingUserIndex !== -1) {
+                        const updatedUsers = [...prevSelectedUsers];
+                        updatedUsers[existingUserIndex].userToTag = newValue;
+                        return updatedUsers;
+                      } else {
+                        return [...prevSelectedUsers, { pic_id: pic.id, userToTag: newValue }];
+                      }
+                    });
                   }}
                   renderInput={(params) => <TextField {...params} label="Usuarios" />}
                 />
                 <Button 
                   onClick={() => handleTagUser(pic.id)}
-                  disabled={selectedUser ? false : true}
+                  disabled={selectedUser.find((item) => item.pic_id === pic.id) ? false : true}
                   variant="outlined"
                   sx={{ marginLeft: '10px' }}
                 >
