@@ -114,12 +114,12 @@ function App() {
       <Toolbar />
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/bars' element={<SearchResource endpoint={'bars'} resource={'Bar'} />} />
+        <Route path='/bars' element={<SearchResource endpoint={'bars'} resource={'Bar'} auth={heads} setIsAuth={handleSetAuth} current_user_id={userId} />} />
         <Route path='/bars/:id/events' element={<EventsBar auth={heads} setIsAuth={handleSetAuth} current_user_id={userId} />} />
         <Route path='/bars/:bar_id/events/:event_id/event_pictures' element={<EventPictures auth={heads} setIsAuth={handleSetAuth} current_user_id={userId} />} />
-        <Route path='/beers' element={<SearchResource endpoint={'beers'} resource={'Cerveza'} />} />
+        <Route path='/beers' element={<SearchResource endpoint={'beers'} resource={'Cerveza'} auth={heads} setIsAuth={handleSetAuth} current_user_id={userId} />} />
         <Route path='/beers/:id' element={<Beer auth={heads} setIsAuth={handleSetAuth} />} />
-        <Route path='/usersearch' element={<SearchResource endpoint={'usersearch'} resource={'Usuario'} />} />
+        <Route path='/users' element={<SearchResource endpoint={'users'} resource={'Usuario'} auth={heads} setIsAuth={handleSetAuth} current_user_id={userId} />} />
         <Route path='/login' element={<Login tokenSaver={handleSave} setIsAuth={handleSetAuth} setUID={setUserId} />} />
         <Route path='/signup' element={<SignUp tokenSaver={handleSave} setIsAuth={handleSetAuth} setUID={setUserId} />} />
         <Route path='/bars/map' element={<BarMap />} />

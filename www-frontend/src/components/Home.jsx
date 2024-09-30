@@ -18,7 +18,7 @@ const Home = () => (
     <Button fullWidth component={Link} to='/bars' variant="contained">Buscar bares</Button>
     <Button fullWidth component={Link} to='/bars/map' variant="contained">Mapa-búsqueda de bares</Button>
     <Button fullWidth component={Link} to='/beers' variant="contained">Buscar cervezas</Button>
-    <Button fullWidth component={Link} to='/usersearch' variant="contained">Buscar usuarios</Button>
+    <Button fullWidth component={Link} to='/users' variant="contained">Buscar usuarios</Button>
   </Stack>
 );
 

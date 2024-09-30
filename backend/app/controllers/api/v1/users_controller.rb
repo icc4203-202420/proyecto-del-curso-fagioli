@@ -1,10 +1,16 @@
 class API::V1::UsersController < ApplicationController
+  include Authenticable
+  
   respond_to :json
-  before_action :set_user, only: [:show, :update]  
+  before_action :set_user, only: [:show, :update]
+  before_action :verify_jwt_token, only: [:index]  
   
   def index
-    @users = User.includes(:reviews, :address).all
-    render json: @users
+    @users_raw = User.includes(:reviews, :address).all
+    @users = @users_raw.map do |user|
+      user.as_json.merge(is_friend: current_user.friends.include?(user))
+    end
+    render json: { users: @users }, status: :ok
   end
 
   def show

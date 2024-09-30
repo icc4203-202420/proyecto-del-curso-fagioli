@@ -20,7 +20,7 @@ class API::V1::EventsController < ApplicationController
                 user_first_name: attendance.user.first_name,
                 user_last_name: attendance.user.last_name,
                 user_handle: attendance.user.handle,
-                is_friend: attendance.user.friends.include?(current_user)
+                is_friend: current_user.friends.include?(attendance.user)
               )
             end
           )

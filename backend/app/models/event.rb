@@ -1,7 +1,7 @@
 class Event < ApplicationRecord
   belongs_to :bar
   has_many :attendances
-  has_many :friendship
+  has_many :friendships
   has_many :users, through: :attendances
   
   has_many :event_pictures
