@@ -15,7 +15,7 @@ const Beers = () => {
 
   const getResources = () => {
     setisLoading(true);
-    axios.get(`/api/v1/beers`,
+    axios.get(`172.22.86.91:3001/api/v1/beers`,
       {
         headers: { Authorization: JSON.parse(isAuth) }
       }

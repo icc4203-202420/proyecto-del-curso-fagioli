@@ -1,15 +1,32 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, SafeAreaView, StatusBar } from "react-native";
 import { AuthProvider } from '../context/AuthContext';
 import { Stack } from 'expo-router';
 import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useEffect } from "react";
 
 export default function RootLayout() {
+
+  // useEffect(() => {
+    // console.log('fetching');
+    // fetch('https://ifconfig.me/all.json')
+    //   .then((resp) => resp.json())
+    //   .then((r) => console.log(r))
+    //   .catch((err) => console.error(err));
+
+    
+    // console.log('now my api');
+    // fetch('http://localhost:3001/api/v1')
+    //   .then((resp) => resp.json())
+    //   .then((r) => console.log(r))
+    //   .catch((err) => console.error(err));
+
+  // }, []);
 
   return (
     <AuthProvider>
       {/* Custom AppBar */}
-      <View style={styles.appBar}>
+      <SafeAreaView style={styles.appBar}>
         <Pressable onPress={() => router.back()} style={styles.backButton}>
         <Ionicons name="arrow-back" size={20} color="white" />
         </Pressable>
@@ -22,7 +39,7 @@ export default function RootLayout() {
             <Ionicons name="log-out" size={20} color="white" />
           </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
 
       {/* Stack Navigation */}
       <Stack
@@ -41,12 +58,14 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create({
   appBar: {
-    height: 55,
+    // flex: 1,
+    // height: 75,
+    marginTop: StatusBar.currentHeight + 3,
     backgroundColor: '#462005',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    padding: 10,
     boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.5)',
     shadowColor: "black",
     shadowOffset: {
@@ -69,7 +88,7 @@ const styles = StyleSheet.create({
   title: {
     color: '#fff',
     fontSize: 20,
-    fontWeight: 500,
+    // fontWeight: 500,
   },
   actions: {
     flexDirection: 'row',

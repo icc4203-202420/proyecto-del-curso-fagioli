@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   input: {
-    height: 40,
+    // height: 40,
     backgroundColor: '#350606',
     color: '#D97A40',
     fontSize: 16,

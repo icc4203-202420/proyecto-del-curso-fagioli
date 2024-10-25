@@ -8,7 +8,7 @@ import { router } from 'expo-router';
 import styles from '../styles';
 import MyButton from '../MyButton';
 
-axios.defaults.baseURL = 'http://172.22.86.91:3001';
+// axios.defaults.baseURL = 'http://172.22.86.91:3001';
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -47,13 +47,15 @@ const SignUp = () => {
   const [serverError, setServerError] = useState('');
 
   const handleSubmit = (vals, { setSubmitting }) => {
+    console.log('enviando registro');
     axios
-      .post(`/api/v1/signup`, { "user": vals })
+      .post(`http://172.22.86.91:3001/api/v1/signup`, { "user": vals })
       .then((resp) => {
-        // console.log(resp.headers.authorization.length);
-        // console.log(resp.headers.authorization);
+        console.log('got resp de registro');
+        console.log(resp.headers.authorization.length);
+        console.log(resp.headers.authorization);
         const newAuth = JSON.stringify(resp.headers.authorization);
-        // console.log(newAuth);
+        console.log(newAuth);
         setToken(newAuth);
         setIsAuth(true);
         setUID(JSON.stringify(resp.data.data.id));
@@ -61,10 +63,11 @@ const SignUp = () => {
         router.push('/');
       })
       .catch((err) => {
+        console.log('hubo un error de registro');
         console.log(err.response.data.status.message);
         setServerError(err.response.data.status.message);
       })
-      .then(() => setSubmitting(false));
+      .then(() => {setSubmitting(false)});
   };
 
   return (
