@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, FlatList, TextInput, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TextInput, ActivityIndicator } from 'react-native';
 import MyButton from '../../MyButton';
 import styles from '../../styles';
 import { useState, useEffect, useContext } from 'react';
@@ -15,7 +15,7 @@ const Beers = () => {
 
   const getResources = () => {
     setisLoading(true);
-    axios.get(`172.22.86.91:3001/api/v1/beers`,
+    axios.get(`/beers`,
       {
         headers: { Authorization: JSON.parse(isAuth) }
       }
@@ -61,17 +61,20 @@ const Beers = () => {
         placeholder="Cerveza"
         style={styles.input}
         onChangeText={handleInput} 
+        placeholderTextColor="#D97A40"
       />
       <MyButton variant="contained" label='BUSCAR' OnClick={handleSearch} />
 
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#D97A40" />
       ) : (
         <FlatList
           data={data}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           ListEmptyComponent={<Text>No se encontraron resultados.</Text>}
+          ItemSeparatorComponent={() => <View style={{height: 20}} />}
+          style={{width: '100%'}}
         />
       )}
       

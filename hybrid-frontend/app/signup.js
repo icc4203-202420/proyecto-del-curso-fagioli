@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { TextInput, View, ScrollView, Text, StyleSheet } from 'react-native';
+import { TextInput, View, ScrollView, Text } from 'react-native';
 import axios from 'axios';
 import { router } from 'expo-router';
 import styles from '../styles';
@@ -49,7 +49,7 @@ const SignUp = () => {
   const handleSubmit = (vals, { setSubmitting }) => {
     console.log('enviando registro');
     axios
-      .post(`http://172.22.86.91:3001/api/v1/signup`, { "user": vals })
+      .post(`/signup`, { "user": vals })
       .then((resp) => {
         console.log('got resp de registro');
         console.log(resp.headers.authorization.length);
@@ -82,6 +82,7 @@ const SignUp = () => {
           <View style={styles.container}>
             <TextInput
               placeholder="Email"
+              placeholderTextColor="#D97A40"
               style={styles.input}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
@@ -93,6 +94,7 @@ const SignUp = () => {
 
             <TextInput
               placeholder="Nombre"
+              placeholderTextColor="#D97A40"
               style={styles.input}
               onChangeText={handleChange('first_name')}
               onBlur={handleBlur('first_name')}
@@ -104,6 +106,7 @@ const SignUp = () => {
 
             <TextInput
               placeholder="Apellido"
+              placeholderTextColor="#D97A40"
               style={styles.input}
               onChangeText={handleChange('last_name')}
               onBlur={handleBlur('last_name')}
@@ -115,6 +118,7 @@ const SignUp = () => {
             
             <TextInput
               placeholder="Handle"
+              placeholderTextColor="#D97A40"
               style={styles.input}
               onChangeText={handleChange('handle')}
               onBlur={handleBlur('handle')}
@@ -126,6 +130,7 @@ const SignUp = () => {
             
             <TextInput
               placeholder="Contraseña"
+              placeholderTextColor="#D97A40"
               style={styles.input}
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
@@ -138,6 +143,7 @@ const SignUp = () => {
             
             <TextInput
               placeholder="Confirmación de Contraseña"
+              placeholderTextColor="#D97A40"
               style={styles.input}
               onChangeText={handleChange('password_confirmation')}
               onBlur={handleBlur('password_confirmation')}
@@ -164,6 +170,7 @@ const SignUp = () => {
               variant='outlined'
               OnClick={() => router.push('/login')}  // Navegar a la pantalla de registro
             />
+            <View style={{ marginTop: 5 }}></View>
           </View>
         )}
       </Formik>

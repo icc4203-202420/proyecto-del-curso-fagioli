@@ -8,8 +8,6 @@ import { router } from 'expo-router';
 import styles from '../styles';
 import MyButton from '../MyButton';
 
-axios.defaults.baseURL = 'http://172.22.86.91:3001'; // cambiar a ip privada del host donde corre el backend
-
 const validationSchema = Yup.object({
   email: Yup.string()
     .required('El email es requerido')
@@ -33,7 +31,7 @@ const Login = () => {
   const handleSubmit = (vals, { setSubmitting }) => {
     // console.log({ "user": vals });
     axios
-      .post(`/api/v1/login`, { "user": vals })
+      .post(`/login`, { "user": vals })
       .then((resp) => {
         console.log(resp);
         const newAuth = JSON.stringify(resp.headers.authorization);
@@ -63,6 +61,7 @@ const Login = () => {
           <View style={styles.container}>
             <TextInput
               placeholder="Email"
+              placeholderTextColor="#D97A40"
               style={styles.input}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
@@ -74,6 +73,7 @@ const Login = () => {
 
             <TextInput
               placeholder="Contraseña"
+              placeholderTextColor="#D97A40"
               style={styles.input}
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
