@@ -56,7 +56,7 @@ function BarMap() {
         mapRef.current.panTo(userCo);
       });
 
-      const response = await axios.get('/api/v1/bars');
+      const response = await axios.get('http://127.0.0.1:3001/api/v1/bars');
       setBars(response.data.bars);
       setMarkerClass(() => Marker);
       

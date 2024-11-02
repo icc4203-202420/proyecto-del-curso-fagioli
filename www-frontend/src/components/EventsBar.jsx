@@ -15,7 +15,7 @@ const EventsBar = ({ auth, setIsAuth, current_user_id }) => {
   const getEvents = useCallback(() => {
     setisLoading(true);
     // console.log(current_user_id);
-    axios.get(`/api/v1/bars/${id}/events`, { 
+    axios.get(`http://127.0.0.1:3001/api/v1/bars/${id}/events`, { 
       headers: { Authorization: JSON.parse(auth) },
     })
       .then((resp) => {
@@ -48,7 +48,7 @@ const EventsBar = ({ auth, setIsAuth, current_user_id }) => {
   }, [getEvents]);
 
   const handleAttend = (ev_id) => {
-    axios.post(`/api/v1/bars/${id}/events/${ev_id}/attendances`, 
+    axios.post(`http://127.0.0.1:3001/api/v1/bars/${id}/events/${ev_id}/attendances`, 
       { attendance: { event_id: ev_id } }, 
       { 
         headers: { Authorization: JSON.parse(auth) },

@@ -36,7 +36,7 @@ const Login = ({ tokenSaver, setIsAuth, setUID }) => {
 
   const handleSubmit = (vals, { setSubmitting }) => {
     axios
-      .post(`/api/v1/login`, { "user": vals })
+      .post(`http://127.0.0.1:3001/api/v1/login`, { "user": vals })
       .then((resp) => {
         // console.log(resp.headers.authorization.length);
         // console.log(resp.headers.authorization);

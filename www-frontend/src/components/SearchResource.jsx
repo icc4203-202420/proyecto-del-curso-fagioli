@@ -13,14 +13,14 @@ const SearchResource = ({ endpoint, resource, auth, setIsAuth, current_user_id }
 
   const getResources = () => {
     setisLoading(true);
-    axios.get(`/api/v1/${endpoint}`,
+    axios.get(`http://127.0.0.1:3001/api/v1/${endpoint}`,
       {
         headers: { Authorization: JSON.parse(auth) }
       }
     )
       .then((resp) => {
         if (resource === 'Usuario') {
-          axios.get('/api/v1/events',
+          axios.get('http://127.0.0.1:3001/api/v1/events',
             {
               headers: { Authorization: JSON.parse(auth) }
             })
@@ -62,7 +62,7 @@ const SearchResource = ({ endpoint, resource, auth, setIsAuth, current_user_id }
 
   const handleCreateFriendship = (future_friend_id) => {
     const selectedUserForEvent = selectedEvent.find(item => item.user_id === future_friend_id);
-    axios.post(`/api/v1/users/${current_user_id}/friendships`,
+    axios.post(`http://127.0.0.1:3001/api/v1/users/${current_user_id}/friendships`,
       { 
         friendship: { 
           friend_id: future_friend_id, 

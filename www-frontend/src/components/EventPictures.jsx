@@ -20,7 +20,7 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
       }
     )
       .then((data) => {
-        axios.get('/api/v1/users',
+        axios.get('http://127.0.0.1:3001/api/v1/users',
           {
             headers: { Authorization: JSON.parse(auth) }
           })
@@ -107,7 +107,7 @@ const EventPictures = ({ auth, setIsAuth, current_user_id }) => {
 
   const handleTagUser = (ep_id) => {
     const selectedUserForPic = selectedUser.find(item => item.pic_id === ep_id);
-    axios.post(`/api/v1/tags`,
+    axios.post(`http://127.0.0.1:3001/api/v1/tags`,
       { 
         tag: { 
           user_id: selectedUserForPic.userToTag.id, 

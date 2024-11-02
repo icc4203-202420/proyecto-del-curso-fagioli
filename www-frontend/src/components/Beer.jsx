@@ -75,11 +75,11 @@ const Beer = ( { auth, setIsAuth } ) => {
   useEffect(() => {
     const fetcher = async () => {
       try {
-        const beerResp = await axios.get(`/api/v1/beers/${id}`);
+        const beerResp = await axios.get(`http://127.0.0.1:3001/api/v1/beers/${id}`);
         setBeerData(beerResp.data.beer);
         
         dispatchHookStories({ type: 'STORIES_FETCH_INIT' });
-        const reviewResp = await axios.get(`/api/v1/beers/${id}/reviews`);
+        const reviewResp = await axios.get(`http://127.0.0.1:3001/api/v1/beers/${id}/reviews`);
         dispatchHookStories({
           type: 'STORIES_FETCH_SUCCESS',
           payload: reviewResp.data.reviews,
@@ -95,7 +95,7 @@ const Beer = ( { auth, setIsAuth } ) => {
 
   const handleSubmit = (vals, { setSubmitting }) => {
     axios
-      .post(`/api/v1/beers/${id}/reviews`, { "review": vals }, { 
+      .post(`http://127.0.0.1:3001/api/v1/beers/${id}/reviews`, { "review": vals }, { 
         headers: { Authorization: JSON.parse(auth) },
       })
       .then((resp) => {
