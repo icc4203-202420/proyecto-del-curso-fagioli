@@ -67,7 +67,7 @@ const Users = () => {
 
   const handleSearch = () => {
     const filtered = data.filter((elem) => (
-      elem.name.toLowerCase().includes(term.toLowerCase())
+      elem.handle.toLowerCase().includes(term.toLowerCase())
     ));
     setData(filtered);
   }
@@ -103,45 +103,51 @@ const Users = () => {
     const selectedEvent = selectedEvents[item.id];
     
     return (
-    <View style={{ 
-      backgroundColor: '#320808',
-      borderRadius: 20,
-      elevation: 15,
-      shadowColor: '#000',
-      borderBottomWidth: 1,
-      flex: 1,
-      flexDirection: 'row',
-      paddingVertical: 20,
-      justifyContent: 'space-evenly',
-      alignItems: 'center'
-    }}>
-      <View style={{ width: '30%' }}>
-        <Text style={{ ...styles.defaultText, fontSize: 16 }}>{item.handle}</Text>
-        <Text style={{ ...styles.defaultText, fontSize: 11, color: '#D97A40' }}>{ item.is_friend ? ('Amigo') : ('') }</Text>
-      </View>
-      <View style={{ width: '40%', gap: 10 }}>
-        <View style={{ borderWidth: 1, borderColor: '#200505', borderRadius: 10 }}>
-          <Picker
-            selectedValue={selectedEvent}
-            onValueChange={(value) => handleSelectEvent(item.id, value)}
-            style={{ color: '#D97A40', backgroundColor: 'transparent' }}
-            disabled={ item.is_friend }
-          >
-            <Picker.Item label="Evento" value={null} />
-            {userEvents.map((option) => (
-              <Picker.Item key={option.id} label={option.name} value={option.name} />
-            ))}
-          </Picker>
+      item.id.toString() === uid ? (<View />) : (
+        <>
+        <View style={{ 
+          backgroundColor: '#320808',
+          borderRadius: 20,
+          elevation: 15,
+          shadowColor: '#000',
+          borderBottomWidth: 1,
+          flex: 1,
+          flexDirection: 'row',
+          paddingVertical: 20,
+          justifyContent: 'space-evenly',
+          alignItems: 'center'
+        }}>
+          <View style={{ width: '30%' }}>
+            <Text style={{ ...styles.defaultText, fontSize: 16 }}>{item.handle}</Text>
+            <Text style={{ ...styles.defaultText, fontSize: 11, color: '#D97A40' }}>{ item.is_friend ? ('Amigo') : ('') }</Text>
+          </View>
+          <View style={{ width: '40%', gap: 10 }}>
+            <View style={{ borderWidth: 1, borderColor: '#200505', borderRadius: 10 }}>
+              <Picker
+                selectedValue={selectedEvent}
+                onValueChange={(value) => handleSelectEvent(item.id, value)}
+                style={{ color: '#D97A40', backgroundColor: 'transparent' }}
+                disabled={ item.is_friend }
+              >
+                <Picker.Item label="Evento" value={null} />
+                {userEvents.map((option) => (
+                  <Picker.Item key={option.id} label={option.name} value={option.name} />
+                ))}
+              </Picker>
+            </View>
+            <MyButton 
+              variant='outlined' 
+              label='AGREGAR AMIGO'
+              disabled={ item.is_friend }
+              OnClick={() => handleCreateFriendship(item.id)} 
+            />
+          </View>
         </View>
-        <MyButton 
-          variant='outlined' 
-          label='AGREGAR AMIGO'
-          disabled={ item.is_friend }
-          OnClick={() => handleCreateFriendship(item.id)} 
-        />
-      </View>
-    </View>
-  )};
+        <View style={{height: 20}} />
+        </>
+      )
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -164,7 +170,6 @@ const Users = () => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           ListEmptyComponent={<Text>No se encontraron resultados.</Text>}
-          ItemSeparatorComponent={() => <View style={{height: 20}} />}
           style={{width: '100%'}}
         />
       )}

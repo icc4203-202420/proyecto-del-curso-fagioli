@@ -7,6 +7,7 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import styles from '../styles';
 import MyButton from '../MyButton';
+import { registerForPushNotificationsAsync } from '../notifications';
 
 // axios.defaults.baseURL = 'http://172.22.86.91:3001';
 
@@ -48,26 +49,29 @@ const SignUp = () => {
 
   const handleSubmit = (vals, { setSubmitting }) => {
     console.log('enviando registro');
-    axios
-      .post(`/signup`, { "user": vals })
-      .then((resp) => {
-        console.log('got resp de registro');
-        console.log(resp.headers.authorization.length);
-        console.log(resp.headers.authorization);
-        const newAuth = JSON.stringify(resp.headers.authorization);
-        console.log(newAuth);
-        setToken(newAuth);
-        setIsAuth(true);
-        setUID(JSON.stringify(resp.data.data.id));
-        setServerError('');
-        router.push('/');
-      })
-      .catch((err) => {
-        console.log('hubo un error de registro');
-        console.log(err.response.data.status.message);
-        setServerError(err.response.data.status.message);
-      })
-      .then(() => {setSubmitting(false)});
+    registerForPushNotificationsAsync()
+      .then((pushToken) => {
+        axios
+          .post(`/signup`, { "user": { ...vals, push_token: pushToken } })
+          .then((resp) => {
+            console.log('got resp de registro');
+            console.log(resp.headers.authorization.length);
+            console.log(resp.headers.authorization);
+            const newAuth = JSON.stringify(resp.headers.authorization);
+            console.log(newAuth);
+            setToken(newAuth);
+            setIsAuth(true);
+            setUID(JSON.stringify(resp.data.data.id));
+            setServerError('');
+            router.push('/');
+          })
+          .catch((err) => {
+            console.log('hubo un error de registro');
+            console.log(err.response.data.status.message);
+            setServerError(err.response.data.status.message);
+          })
+          .then(() => {setSubmitting(false)});
+      });
   };
 
   return (

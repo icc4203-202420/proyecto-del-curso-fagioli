@@ -28,7 +28,12 @@
     },
     "plugins": [
       "expo-router"
-    ]
-    
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "eeec1e27-cb84-40e7-80d1-25923a648c8b"
+      }
+    },
+    "owner": "lbfagioli"
   }
 }

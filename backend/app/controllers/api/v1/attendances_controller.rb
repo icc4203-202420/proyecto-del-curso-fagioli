@@ -1,3 +1,5 @@
+require_relative '../../../services/push_notification_service'
+
 class API::V1::AttendancesController < ApplicationController
   include Authenticable
   respond_to :json
@@ -13,6 +15,16 @@ class API::V1::AttendancesController < ApplicationController
     puts "\n\n params: #{att_params} \n\n"
     puts "\n\n attendace: #{@attendance} \n\n"
     if @attendance.save
+      @event = Event.find(att_params[:event_id])
+      @bar = Bar.find(@event.bar_id)
+      current_user.friends.map do |friend|
+        PushNotificationService.send_notification(
+          to: friend.push_token,
+          title: "#{current_user.handle} asiste a un nuevo evento",
+          body: "#{@event.name} en #{@bar.name}",
+          data: {}
+        )
+      end
       render json: { attendance: @attendance, message: 'Attendance created successfully.' }, status: :ok
       else
       render json: @attendance.errors, status: :unprocessable_entity

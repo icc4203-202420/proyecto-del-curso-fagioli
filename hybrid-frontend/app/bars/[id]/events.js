@@ -9,9 +9,10 @@ import { FlatList, Text, View } from "react-native";
 
 const Events = () => {
   const { id, bar_name } = useLocalSearchParams();
-  const { token, setIsAuth } = useContext(AuthContext);
+  const { token, setIsAuth, uid } = useContext(AuthContext);
   const [isLoading, setisLoading] = useState(true);
   const [data, setData] = useState([]);
+  const [reload, setReload] = useState('');
 
   const getResources = () => {
     setisLoading(true);
@@ -35,7 +36,19 @@ const Events = () => {
 
   useEffect(() => {
     getResources();
-  }, []);
+  }, [reload]);
+
+  const handleConfirm = (ev_id) => {
+    axios.post(`/bars/${id}/events/${ev_id}/attendances`, 
+      { attendance: { event_id: ev_id } }, 
+      { 
+        headers: { Authorization: JSON.parse(token) },
+      }
+    ).then((resp) => {
+      console.log('confirmed attendance');
+      setReload('reload');
+    }).catch((err) => console.error(err));
+  }
 
   const renderItem = ({ item }) => (
     <View style={{ 
@@ -75,7 +88,8 @@ const Events = () => {
         <MyButton 
           variant='contained' 
           label='CONFIRMAR ASISTENCIA'
-          OnClick={() => console.log('xd')} 
+          disabled={ item.attendances.some((att) => att.user_id.toString() === uid) }
+          OnClick={() => handleConfirm(item.id)} 
         />
         <MyButton 
           variant='outlined' 
