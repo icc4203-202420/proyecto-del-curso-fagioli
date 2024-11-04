@@ -49,6 +49,7 @@ const Login = ({ tokenSaver, setIsAuth, setUID }) => {
         navi('/');
       })
       .catch((err) => {
+        console.error(err);
         setServerError(err.response.data);
       })
       .then(() => setSubmitting(false));

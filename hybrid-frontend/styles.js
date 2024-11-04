@@ -17,6 +17,9 @@ const styles = StyleSheet.create({
   buttonPressed: {
     opacity: 0.8,
   },
+  buttonDisabled: {
+    opacity: 0.2,
+  },
   containedButton: {
     backgroundColor: '#D97A40',
     borderRadius: 4,
@@ -31,8 +34,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   outlinedButton: {
-    borderWidth: 1,
-    borderColor: '#D97A40',
+    borderWidth: 0.5,
+    borderColor: '#B56515',
     borderRadius: 4,
     padding: 10,
     width: '100%',

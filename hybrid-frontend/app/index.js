@@ -7,7 +7,7 @@ import { useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://192.168.1.87:3001/api/v1'; // reemplazar 192.168.1.87 por la ip del backend, en mi caso es la ip privada de mi pc donde estoy corriendo el /project/backend
+axios.defaults.baseURL = 'http://192.168.150.41:3001/api/v1'; // reemplazar 192.168.1.87 por la ip del backend, en mi caso es la ip privada de mi pc donde estoy corriendo el /project/backend
 
 export default function App() {
   
@@ -32,7 +32,7 @@ export default function App() {
       <MyButton 
         label='BUSCAR BARES'
         variant='contained'
-        OnClick={() => console.log('works')}
+        OnClick={() => router.push('/bars')}
       />
       <MyButton 
         label='MAPA-BÚSQUEDA DE BARES'
@@ -47,7 +47,7 @@ export default function App() {
       <MyButton 
         label='BUSCAR USUARIOS'
         variant='contained'
-        OnClick={() => console.log('works')}
+        OnClick={() => router.push('/users')}
       />
       <StatusBar style="auto" />
     </View>

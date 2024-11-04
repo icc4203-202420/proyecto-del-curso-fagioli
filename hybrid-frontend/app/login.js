@@ -7,6 +7,7 @@ import axios from 'axios';
 import { router } from 'expo-router';
 import styles from '../styles';
 import MyButton from '../MyButton';
+import { registerForPushNotificationsAsync } from '../notifications'
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -30,23 +31,27 @@ const Login = () => {
 
   const handleSubmit = (vals, { setSubmitting }) => {
     // console.log({ "user": vals });
-    axios
-      .post(`/login`, { "user": vals })
-      .then((resp) => {
-        console.log(resp);
-        const newAuth = JSON.stringify(resp.headers.authorization);
-        console.log(newAuth);
-        setToken(newAuth);
-        setIsAuth(true);
-        setUID(JSON.stringify(resp.data.status.data.user.id));
-        setServerError('');
-        router.push('/');  // Redirigir al usuario
-      })
-      .catch((err) => {
-        console.log(err);
-        // setServerError(err.response.data);
-      })
-      .finally(() => setSubmitting(false));
+    registerForPushNotificationsAsync()
+      .then((pt) => {
+        console.log(pt);
+      });
+    // axios
+    //   .post(`/login`, { "user": vals })
+    //   .then((resp) => {
+    //     console.log(resp);
+    //     const newAuth = JSON.stringify(resp.headers.authorization);
+    //     console.log(newAuth);
+    //     setToken(newAuth);
+    //     setIsAuth(true);
+    //     setUID(JSON.stringify(resp.data.status.data.user.id));
+    //     setServerError('');
+    //     router.push('/');  // Redirigir al usuario
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     // setServerError(err.response.data);
+    //   })
+    //   .finally(() => setSubmitting(false));
   };
 
   return (

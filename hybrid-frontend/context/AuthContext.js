@@ -63,7 +63,13 @@ export const AuthProvider = ({ children }) => {
       .then((value) => {
         setToken(value);
       })
-      .catch((err) => console.error('Error al cargar el token:', err));
+      .catch((err) => console.error('Error al cargar el token:', err));    
+      
+    getItem('uid')
+      .then((value) => {
+        setUID(value);
+      })
+      .catch((err) => console.error('Error al cargar el uid:', err));
   }, []);
 
   useEffect(() => {
@@ -73,6 +79,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     setItem('token', token);
   }, [token]);
+
+  useEffect(() => {
+    setItem('uid', uid);
+  }, [uid]);
 
   return (
     <AuthContext.Provider value={{ isAuth, setIsAuth, uid, setUID, token, setToken }}>
