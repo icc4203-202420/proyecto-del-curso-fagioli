@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Event() {
-  const [facing, setFacing] = useState('back');
+  const [facing, setFacing] = useState('back'); //
   const [permission, requestPermission] = useCameraPermissions();
   const { id, eventId } = useLocalSearchParams();
   const cameraRef = useRef(null);
