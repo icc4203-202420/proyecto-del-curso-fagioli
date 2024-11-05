@@ -22,7 +22,7 @@ class API::V1::AttendancesController < ApplicationController
           to: friend.push_token,
           title: "#{current_user.handle} asiste a un nuevo evento",
           body: "#{@event.name} en #{@bar.name}",
-          data: {}
+          data: { situation: 'attendance to event', bar_id: @bar.id, bar_name: @bar.name }
         )
       end
       render json: { attendance: @attendance, message: 'Attendance created successfully.' }, status: :ok

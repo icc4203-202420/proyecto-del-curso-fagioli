@@ -1,11 +1,10 @@
-import { useLocalSearchParams } from "expo-router";
-import MyButton from '../../../MyButton';
-import styles from '../../../styles';
+import { router, useLocalSearchParams } from "expo-router";
+import MyButton from '../../../../MyButton';
+import styles from '../../../../styles';
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { AuthContext } from '../../../context/AuthContext';
-import { FlatList, Text, View } from "react-native";
-
+import { AuthContext } from '../../../../context/AuthContext';
+import { FlatList, Text, View, ActivityIndicator } from "react-native";
 
 const Events = () => {
   const { id, bar_name } = useLocalSearchParams();
@@ -16,27 +15,29 @@ const Events = () => {
 
   const getResources = () => {
     setisLoading(true);
-    axios.get(`/bars/${id}/events`,
-      {
-        headers: { Authorization: JSON.parse(token) }
-      }
-    )
-      .then((resp) => {
-        setisLoading(false);
-        console.log(Object.values(resp.data)[0]);
-        setData(Object.values(resp.data)[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.status === 401) {
-          setIsAuth(false);
+    if (token) {
+      axios.get(`/bars/${id}/events`,
+        {
+          headers: { Authorization: JSON.parse(token) }
         }
-      });
+      )
+        .then((resp) => {
+          setisLoading(false);
+          console.log(Object.values(resp.data)[0]);
+          setData(Object.values(resp.data)[0]);
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.status === 401) {
+            setIsAuth(false);
+          }
+        });
+      }
   }
 
   useEffect(() => {
     getResources();
-  }, [reload]);
+  }, [reload, token, uid]);
 
   const handleConfirm = (ev_id) => {
     axios.post(`/bars/${id}/events/${ev_id}/attendances`, 
@@ -94,7 +95,7 @@ const Events = () => {
         <MyButton 
           variant='outlined' 
           label='VER FOTOS'
-          OnClick={() => console.log('xd')} 
+          OnClick={() => router.push(`/bars/${id}/events/${item.id}`)} 
         />
       </View>
     </View>
@@ -103,14 +104,18 @@ const Events = () => {
   return (
     <View style={ styles.container }>
       <Text style={{ ...styles.defaultText, fontSize: 30 }}> Eventos del bar {bar_name} </Text>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        ListEmptyComponent={<Text style={styles.defaultText}>No se encontraron eventos para este bar.</Text>}
-        ItemSeparatorComponent={() => <View style={{height: 20}} />}
-        style={{width: '100%'}}
-      />
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#D97A40" />
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          ListEmptyComponent={<Text style={styles.defaultText}>No se encontraron eventos para este bar.</Text>}
+          ItemSeparatorComponent={() => <View style={{height: 20}} />}
+          style={{width: '100%'}}
+        />
+      )}
     </View>
   );
 }

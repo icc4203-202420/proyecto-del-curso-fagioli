@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useReducer, useContext } from 'react';
-import { View, ScrollView, Text, ActivityIndicator, TextInput, StyleSheet, FlatList } from 'react-native';
-import { Formik, Field } from 'formik';
+import { View, ScrollView, Text, ActivityIndicator, TextInput, FlatList } from 'react-native';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useLocalSearchParams } from 'expo-router';
 import axios from 'axios';
-import { Slider } from '@rneui/themed';  // Importando el Slider de RNEUI
+import { Slider } from '@rneui/themed';
 import MyButton from '../../MyButton';
 import styles from '../../styles';
 import { AuthContext } from '../../context/AuthContext';
 
 const validationSchema = Yup.object({
-  rating: Yup.number()  // Cambiamos de string a number para el rating
+  rating: Yup.number()
     .required('Rating requerido'),
   text: Yup.string()
     .required('El comentario es requerido')
@@ -20,17 +20,16 @@ const validationSchema = Yup.object({
 });
 
 const initialValues = {
-  rating: 0,  // El rating comienza en 0
+  rating: 0,
   text: '',
 };
 
 const BeerDetails = () => {
   const { id } = useLocalSearchParams();
-  const { setIsAuth, token, getItem } = useContext(AuthContext);
+  const { setIsAuth, token } = useContext(AuthContext);
   const [beerData, setBeerData] = useState({});
   const [serverError, setServerError] = useState('');
   const [rev, setRev] = useState('');
-  // const [token, setToken] = useState('');
   const [loadingToken, setLoadingToken] = useState(false);
 
   const reviewsHookReducer = (state, action) => {
@@ -67,10 +66,6 @@ const BeerDetails = () => {
   useEffect(() => {
     const fetcher = async () => {
       try {
-        // setLoadingToken(true);
-        // const gotToken = await getItem('token');
-        // setToken(gotToken);
-        // setLoadingToken(false);
         const beerResp = await axios.get(`/beers/${id}`);
         setBeerData(beerResp.data.beer);
 

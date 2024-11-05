@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useContext, useEffect } from "react";
 import styles from '../styles';
+import * as Notifications from 'expo-notifications';
 
 function AppLay() {
   const { isAuth, setIsAuth, setToken } = useContext(AuthContext);
@@ -57,6 +58,42 @@ function AppLay() {
 }
 
 export default function RootLayout() {
+  useEffect(() => {
+    const receivedListener = Notifications.addNotificationReceivedListener(async (notification) => {
+      const { title, body , data } = notification.request.content;
+      // const { imageUrl, username }  = data;
+
+      // if (username === userData.username) {
+      //   setItem("imageUrl", imageUrl);
+      //   setImageUrl(imageUrl);
+      // }
+      
+    });
+  
+    const responseListener = Notifications.addNotificationResponseReceivedListener((response) => {
+      const { data } = response.notification.request.content;
+      switch (data.situation) {
+        case 'create a friendship':
+          console.log('we created a friendship and opened the notification');
+          break;
+        case 'attendance to event':
+          console.log('user opened the notification attendance to event');
+          console.log(`bar id: ${data.bar_id}, bar name: ${data.bar_name}`);
+          router.push(`/bars/${data.bar_id}/events`);
+          break;
+        default:
+          console.log('no situation matched');
+      }
+      // if (data?.imageUrl) {
+      //   Linking.openURL(data.imageUrl);
+      // }
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(receivedListener);
+      Notifications.removeNotificationSubscription(responseListener);
+    };
+  }, []);
   return (
     <AuthProvider>
       <AppLay/>

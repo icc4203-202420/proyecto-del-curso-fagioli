@@ -61,6 +61,7 @@ export const AuthProvider = ({ children }) => {
       
     getItem('token')
       .then((value) => {
+        console.log('got value', value);
         setToken(value);
       })
       .catch((err) => console.error('Error al cargar el token:', err));    
@@ -73,15 +74,27 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    setItem('isAuth', isAuth.toString());
+    if (isAuth) {
+      setItem('isAuth', isAuth.toString());
+    } else {
+      setItem('isAuth', isAuth);
+    }
   }, [isAuth]);
 
   useEffect(() => {
-    setItem('token', token);
+    if (token) {
+      setItem('token', token.toString());
+    } else {
+      setItem('token', token);
+    }
   }, [token]);
 
   useEffect(() => {
-    setItem('uid', uid);
+    if (uid) {
+      setItem('uid', uid.toString());
+    } else {
+      setItem('uid', uid);
+    }
   }, [uid]);
 
   return (

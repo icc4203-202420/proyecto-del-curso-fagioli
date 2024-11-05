@@ -9,7 +9,6 @@ import {Picker} from '@react-native-picker/picker';
 
 const Users = () => {
   const { token, setIsAuth, uid } = useContext(AuthContext);
-   
   const [isLoading, setisLoading] = useState(true);
   const [data, setData] = useState([]);
   const [term, setTerm] = useState('');
@@ -25,40 +24,42 @@ const Users = () => {
 
   const getResources = () => {
     setisLoading(true);
-    axios.get(`/users`,
-      {
-        headers: { Authorization: JSON.parse(token) }
-      }
-    )
-      .then((resp) => {
-        axios.get('/events',
-          {
-            headers: { Authorization: JSON.parse(token) }
-          })
-          .then((resp_events) => {
-            setUserEvents(resp_events.data.events);
-            setisLoading(false);
-          })
-          .catch((error) => {
-            console.error(error);
-            if (error.status === 401) {
-              setIsAuth(false);
-            }
-          });
-        
-        setData(Object.values(resp.data)[0]);
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.status === 401) {
-          setIsAuth(false);
+    if (token) {
+      axios.get(`/users`,
+        {
+          headers: { Authorization: JSON.parse(token) }
         }
-      });
+      )
+        .then((resp) => {
+          axios.get('/events',
+            {
+              headers: { Authorization: JSON.parse(token) }
+            })
+            .then((resp_events) => {
+              setUserEvents(resp_events.data.events);
+              setisLoading(false);
+            })
+            .catch((error) => {
+              console.error(error);
+              if (error.status === 401) {
+                setIsAuth(false);
+              }
+            });
+          
+          setData(Object.values(resp.data)[0]);
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.status === 401) {
+            setIsAuth(false);
+          }
+        });
+    }
   }
 
   useEffect(() => {
     getResources();
-  }, []);
+  }, [token]);
 
   const handleInput = (event) => {
     console.log(event);
@@ -73,7 +74,6 @@ const Users = () => {
   }
 
   const handleCreateFriendship = (future_friend_id) => {
-    // const selectedUserForEvent = selectedEvents.find(item => item.user_id === future_friend_id);
     const selectedUserForEvent = selectedEvents[future_friend_id];
     axios.post(`/users/${uid}/friendships`,
       { 
@@ -178,108 +178,3 @@ const Users = () => {
 }
 
 export default Users;
-
-// return (
-//   <Stack 
-//     spacing={2}
-//     sx={{
-//       padding: '20px',
-//       justifyContent: "center",
-//       alignItems: "flex-center",
-//       margin: 'auto',
-//     }} 
-//   >
-//     <Typography variant="h4" gutterBottom>
-//       Buscar {`${resource.toLowerCase()}`}
-//     </Typography>
-//     <TextField label={`${resource}`} variant="filled" onChange={handleInput} autoFocus margin="normal" />
-//     <Button variant="contained" color="primary" onClick={handleSearch} >
-//       Buscar
-//     </Button>
-
-//     {isLoading ? (
-//       <LinearProgress />
-//     ) : (
-//       data.length > 0 ? (
-//         data.map((elem, id) => {
-//           let the_elem = '';
-//           if (resource === 'Usuario') {
-//             the_elem = elem.handle.toLowerCase();
-//           } else {
-//             the_elem = elem.name.toLowerCase();
-//           }
-//           if (the_elem.includes(term.toLowerCase())) {
-//             return (
-//               <Stack
-//                 key={elem.id || id}
-//                 direction="row"
-//                 spacing={2}
-//                 sx={{
-//                   justifyContent: "space-between",
-//                   alignItems: "center",
-//                   width: '100%',
-//                 }}
-//               >
-
-
-// {
-//   resource === 'Usuario' && elem.id != current_user_id && (
-//     <Stack
-//       key={elem.id}
-//       direction='row'
-//       // spacing={2}
-//       sx={{ 
-//         backgroundColor: "#320808",
-//         padding: 2,
-//         borderRadius: 5,
-//         boxShadow: '1px 1px #1E0808',
-//         filter: 'drop-shadow(1px 1px 0.3rem #150505)',
-//         opacity: 1,
-//         width: '100%',
-//         justifyContent: 'space-evenly'
-//       }}
-//     >
-//       <Stack sx={{ width: '40%', margin: 'auto 0' }}>
-//         <Typography variant='body1' style={{ wordWrap: "break-word", width: '100%' }}>{elem.handle}</Typography>
-//         <Typography variant='caption' sx={{ color: '#D97A40' }} >{ elem.is_friend ? ('Amigo') : ('') }</Typography>
-//       </Stack>
-//       <Stack spacing={1} sx={{ width: '40%' }}>
-//         <Autocomplete 
-//           disabled={elem.is_friend}
-//           options={userEvents} 
-//           getOptionLabel={(option) => option.name}
-//           renderOption={(props, option) => (
-//             <li {...props} key={option.id}
-//               style={{ backgroundColor: '#320808', color: '#ddd' }}
-//             >
-//               {option.name}
-//             </li>
-//           )}
-//           onChange={(event, newValue) => {
-//             setSelectedEvent((prevSelectedEvents) => {
-//               const existingEventIndex = prevSelectedEvents.findIndex(item => item.user_id === elem.id);
-              
-//               if (existingEventIndex !== -1) {
-//                 const updatedEvents = [...prevSelectedEvents];
-//                 updatedEvents[existingEventIndex].event = newValue;
-//                 return updatedEvents;
-//               } else {
-//                 return [...prevSelectedEvents, { user_id: elem.id, event: newValue }];
-//               }
-//             });
-//           }}
-//           renderInput={(params) => <TextField {...params} label="Evento" />}
-//         />
-//         <Button 
-//           onClick={() => handleCreateFriendship(elem.id)}
-//           variant="outlined" 
-//           disabled={elem.is_friend}
-//           sx={{ marginLeft: '10px' }}
-//         >
-//           Agregar amigo
-//         </Button>
-//       </Stack>
-//     </Stack>
-//   )
-// }})
-// )
