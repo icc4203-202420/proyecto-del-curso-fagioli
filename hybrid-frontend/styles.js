@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     height: 100,
-    borderColor: 'gray',
+    borderColor: '#793A10',
     borderWidth: 1,
     borderRadius: 8,
     padding: 10,
@@ -119,12 +119,13 @@ const styles = StyleSheet.create({
     color: '#D97A40'
   },
   sliderThumb: {
-    height: 20,
-    width: 20,
-    backgroundColor: '#000',
+    height: 30,
+    width: 30,
+    backgroundColor: '#D97A40',
   },
   sliderTrack: {
-    height: 10,
+    height: 20,
+    borderRadius: 10
   },
   renderClassic: {
     backgroundColor: '#320808',

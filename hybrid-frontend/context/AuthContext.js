@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from 'react-native';
 import * as SecureStorage from 'expo-secure-store';
 import * as ActionCable from '@rails/actioncable';
+import backendIp from '../ip';
 
 global.addEventListener = () => {};
 global.removeEventListener = () => {};
@@ -103,7 +104,7 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       setItem('token', token.toString());
       if ((subscriptionRef.current === null) || (cableRef.current === null)) {
-        const encoded = encodeURI(`ws://192.168.150.41:3001/cable?token=${JSON.parse(token)}`);
+        const encoded = encodeURI(`ws://${backendIp}:3001/cable?token=${JSON.parse(token)}`);
         cableRef.current = ActionCable.createConsumer(encoded);
         subscriptionRef.current = cableRef.current.subscriptions.create(
           { channel: "FeedChannel" },

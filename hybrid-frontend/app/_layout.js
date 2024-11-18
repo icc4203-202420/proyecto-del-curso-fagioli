@@ -7,6 +7,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useContext, useEffect } from "react";
 import styles from '../styles';
 import * as Notifications from 'expo-notifications';
+import axios from 'axios';
+import backendIp from '../ip';
+
+axios.defaults.baseURL = `http://${backendIp}:3001/api/v1`;
 
 const Noti = () => {
   useEffect(() => {

@@ -34,7 +34,10 @@ class API::V1::ReviewsController < ApplicationController
           resource: @review.as_json.merge(
             publication_type: "review", 
             handle: User.find(@review.user_id).handle, 
-            beer_name: Beer.find(@review.beer_id).name
+            beer_name: Beer.find(@review.beer_id).name,
+            bar_name: Beer.find(@review.beer_id).bars&.first&.name,
+            bar_address: Beer.find(@review.beer_id).bars&.first&.address,
+            country: Beer.find(@review.beer_id).bars&.first&.address&.country&.name
           )
         })
       end
