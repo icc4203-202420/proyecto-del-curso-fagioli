@@ -11,6 +11,14 @@ require 'factory_bot_rails'
 #   end
 
 # Initialize the review counter
+
+puts "Purging old attachments..."
+ActiveStorage::Attachment.all.each do |attachment|
+  attachment.purge
+end
+puts "All attachments purged."
+
+
 ReviewCounter.create(count: 0)
 
 if Rails.env.development?

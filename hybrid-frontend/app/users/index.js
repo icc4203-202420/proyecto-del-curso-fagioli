@@ -74,12 +74,12 @@ const Users = () => {
   }
 
   const handleCreateFriendship = (future_friend_id) => {
-    const selectedUserForEvent = selectedEvents[future_friend_id];
-    axios.post(`/users/${uid}/friendships`,
+    const selectedUserForEvent = selectedEvents[uid];
+    axios.post(`/users/${future_friend_id}/friendships`,
       { 
         friendship: { 
-          friend_id: future_friend_id, 
-          event_id: selectedUserForEvent ? selectedUserForEvent.event.id : null, 
+          // friend_id: future_friend_id, 
+          event_id: selectedUserForEvent ? selectedUserForEvent.event.id : null,
           bar_id: selectedUserForEvent ? selectedUserForEvent.event.bar_id : null
         } 
       },

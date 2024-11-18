@@ -27,6 +27,18 @@ class API::V1::ReviewsController < ApplicationController
   def create
     @review = @parent.reviews.build(review_params.merge(user_id: current_user.id))
     if @review.save
+      current_user.friends.each do |friend| 
+        FeedChannel.broadcast_to(friend, { 
+          message: "hello from rails dude, #{friend.handle}", 
+          type: 'review', 
+          resource: @review.as_json.merge(
+            publication_type: "review", 
+            handle: User.find(@review.user_id).handle, 
+            beer_name: Beer.find(@review.beer_id).name
+          )
+        })
+      end
+      # FeedChannel.broadcast_to(current_user, { message: "hello from rails dude, #{current_user.handle}", type: 'review', resource: @review.as_json })
       render json: @review, status: :created, location: api_v1_review_url(@review)
     else
       render json: @review.errors, status: :unprocessable_entity

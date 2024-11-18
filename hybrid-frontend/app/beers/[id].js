@@ -134,7 +134,7 @@ const BeerDetails = () => {
       >
         {({ isSubmitting, errors, touched, values, setFieldValue, handleSubmit }) => (
           <View style={styles.formContainer}>
-            <Text style={styles.defaultText}>Calificación: {values.rating}</Text>
+            <Text style={styles.defaultText}>Calificación: {values.rating.toFixed(1)}</Text>
             <Slider
               value={values.rating}
               onValueChange={(value) => setFieldValue('rating', value)}

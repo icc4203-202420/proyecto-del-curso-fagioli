@@ -69,14 +69,13 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
   appBar: {
-    marginTop: StatusBar.currentHeight + 3,
+    marginTop: StatusBar.currentHeight,
     backgroundColor: '#462005',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 10,
     boxShadow: '0px 10px 10px rgba(0, 0, 0, 0.5)',
-    shadowColor: "black",
     shadowOffset: {
       width: 6,
       height: 6,
@@ -84,6 +83,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 4,
     elevation: 16, // Android
+    shadowColor: "#000",
     borderBottomColor: 'black',
     borderBottomWidth: 1,
   },
@@ -126,6 +126,23 @@ const styles = StyleSheet.create({
   sliderTrack: {
     height: 10,
   },
+  renderClassic: {
+    backgroundColor: '#320808',
+    borderRadius: 20,
+    elevation: 15,
+    shadowColor: '#000',
+    flex: 1,
+    // alignItems: 'center',
+    gap: 15,
+    padding: 25
+  },
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 5,
+    opacity: 0.8,
+    margin: 'auto'
+  }
 });
 
 export default styles;

@@ -1,3 +1,5 @@
+require_relative '../../../services/push_notification_service'
+
 class API::V1::TagsController < ApplicationController
   include Authenticable
 
@@ -9,6 +11,12 @@ class API::V1::TagsController < ApplicationController
     @tag = Tag.new(tag_params)
 
     if @tag.save
+      PushNotificationService.send_notification(
+        to: User.find(tag_params[:user_id]).push_token,
+        title: "#{current_user.handle} te ha etiquetado en una fotografía",
+        body: "Presiona para ver la imagen",
+        data: { situation: 'create a tag', bar_id: @tag.event_picture.event.bar.id, event_id: @tag.event_picture.event.id }
+      )
       render json: { tag: @tag, message: 'Tag created successfully.' }, status: :ok
     else
       render json: @tag.errors, status: :unprocessable_entity

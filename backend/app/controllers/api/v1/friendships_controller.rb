@@ -16,20 +16,39 @@ class API::V1::FriendshipsController < ApplicationController
   
   end
 
+  # def create
+  #   @friendship = Friendship.new(friendship_params.merge(user_id: @user.id))
+  #   if @friendship.save
+  #     PushNotificationService.send_notification(
+  #       to: User.find(friendship_params[:friend_id]).push_token,
+  #       title: "#{@user.handle} te ha agregado como amigo",
+  #       body: "Presiona para abrir la aplicación",
+  #       data: { situation: 'create a friendship' }
+  #     )
+  #     render json: { friendship: @friendship, message: "Friendship done" }, status: :ok
+  #   else
+  #     render json: @friendship.errors, status: :unprocessable_entity
+  #   end
+  # end
+
   def create
-    @friendship = Friendship.new(friendship_params.merge(user_id: @user.id))
-    if @friendship.save
+    ActiveRecord::Base.transaction do
+      @friendship = Friendship.create!(friendship_params.merge(user_id: @user.id, friend_id: current_user.id))
+      inverse_friendship = Friendship.create!(friendship_params.merge(user_id: @friendship.friend_id, friend_id: @user.id))
+
       PushNotificationService.send_notification(
-        to: User.find(friendship_params[:friend_id]).push_token,
-        title: "#{@user.handle} te ha agregado como amigo",
+        to: User.find(@user.id).push_token,
+        title: "#{current_user.handle} te ha agregado como amigo",
         body: "Presiona para abrir la aplicación",
         data: { situation: 'create a friendship' }
       )
-      render json: { friendship: @friendship, message: "Friendship done" }, status: :ok
-    else
-      render json: @friendship.errors, status: :unprocessable_entity
     end
+  
+    render json: { friendship: @friendship, message: "Friendship done" }, status: :ok
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors }, status: :unprocessable_entity
   end
+  
 
   def update
       
@@ -42,7 +61,7 @@ class API::V1::FriendshipsController < ApplicationController
   end
 
   def friendship_params
-    params.require(:friendship).permit(:friend_id, :bar_id, :event_id)
+    params.require(:friendship).permit(:bar_id, :event_id)
   end
 
   def verify_jwt_token

@@ -14,8 +14,8 @@ export default function App() {
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log('rendered app');
-    console.log('sync token:', token);
+    // console.log('rendered app');
+    // console.log('sync token:', token);
     // getItem('token').then((val) => console.log('token:', val));
   });
 
@@ -35,11 +35,6 @@ export default function App() {
         OnClick={() => router.push('/bars')}
       />
       <MyButton 
-        label='MAPA-BÚSQUEDA DE BARES'
-        variant='contained'
-        OnClick={() => console.log('works')}
-      />
-      <MyButton 
         label='BUSCAR CERVEZAS'
         variant='contained'
         OnClick={() => router.push('/beers')}
@@ -48,6 +43,11 @@ export default function App() {
         label='BUSCAR USUARIOS'
         variant='contained'
         OnClick={() => router.push('/users')}
+      />
+      <MyButton 
+        label='IR AL FEED'
+        variant='contained'
+        OnClick={() => router.push('/feed')}
       />
       <StatusBar style="auto" />
     </View>

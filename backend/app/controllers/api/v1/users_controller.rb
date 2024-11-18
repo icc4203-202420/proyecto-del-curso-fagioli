@@ -10,6 +10,8 @@ class API::V1::UsersController < ApplicationController
     @users = @users_raw.map do |user|
       user.as_json.merge(is_friend: current_user.friends.include?(user))
     end
+    # current_user.friends.each { |friend| FeedChannel.broadcast_to(friend, { message: "hello from rails dude, #{friend.handle}", type: 'mess', resource: @users.as_json }) }
+    # FeedChannel.broadcast_to(current_user, { message: 'hello from rails myself', type: 'mess', resource: @users.as_json })
     render json: { users: @users }, status: :ok
   end
 
